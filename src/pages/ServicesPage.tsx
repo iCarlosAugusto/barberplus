@@ -9,9 +9,7 @@ interface ServiceCategory {
 const ServicesPage: React.FC = () => {
   const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [rating, setRating] = useState<number>(4.9);
-  const [reviewCount, setReviewCount] = useState<number>(66);
+  const [error, setError] = useState<string | null>(null); 
 
   useEffect(() => {
     const getHaircuts = async () => {
