@@ -1,0 +1,44 @@
+{
+  "haircuts": [
+    {
+      "id": 1,
+      "name": "Classic Cut",
+      "description": "A timeless, clean cut suitable for professional settings",
+      "price": 25,
+      "duration": 30,
+      "imageUrl": "https://example.com/images/classic-cut.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Fade",
+      "description": "Gradual transition from short to longer hair with a modern edge",
+      "price": 35,
+      "duration": 45,
+      "imageUrl": "https://example.com/images/fade.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Buzz Cut",
+      "description": "Short, low-maintenance style with uniform length",
+      "price": 20,
+      "duration": 20,
+      "imageUrl": "https://example.com/images/buzz-cut.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Pompadour",
+      "description": "Volume on top with shorter sides for a stylish look",
+      "price": 40,
+      "duration": 45,
+      "imageUrl": "https://example.com/images/pompadour.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Undercut",
+      "description": "Disconnected style with short sides and back, longer on top",
+      "price": 35,
+      "duration": 40,
+      "imageUrl": "https://example.com/images/undercut.jpg"
+    }
+  ]
+} 
