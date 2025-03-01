@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchHaircuts, Haircut } from '../services/haircutService';
 import { BeautyDatePicker } from '../components/InlineCalendar';
+import { BeautyModal } from '../components/Modal';
 
 interface ServiceCategory {
   name: string;
@@ -255,8 +256,8 @@ const ServicesPage: React.FC = () => {
       </footer>
 
       {/* Booking Modal */}
-      {showModal && selectedService && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+
+        <BeautyModal isOpen={showModal} onClose={() => setShowModal(false)} title={selectedMonth}>
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center p-4 border-b">
               <h2 className="text-xl font-bold">{selectedMonth}</h2>
@@ -269,8 +270,6 @@ const ServicesPage: React.FC = () => {
                 </svg>
               </button>
             </div>
-            
-            {/* Calendar */}
             <BeautyDatePicker />
             
             {/* Time Period Selection */}
@@ -379,8 +378,7 @@ const ServicesPage: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-      )}
+        </BeautyModal>
     </div>
   );
 };
