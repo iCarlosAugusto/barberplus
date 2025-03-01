@@ -101,28 +101,6 @@ const ServicesPage: React.FC = () => {
 
       <h2 className="text-2xl font-bold mb-6 border-b pb-2">Serviços</h2>
 
-      {/* Popular Services Section */}
-      <div className="mb-8">
-        <h3 className="text-xl font-semibold mb-4">Serviços populares</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {serviceCategories.length > 0 && serviceCategories[0].services.slice(0, 3).map((service) => (
-            <div key={service.id} className="border rounded-lg p-4 hover:shadow-md transition">
-              <h4 className="font-semibold text-lg">{service.name}</h4>
-              <div className="flex justify-between mt-2">
-                <span className="font-bold">R$ {service.price.toFixed(2)}</span>
-                <span className="text-gray-600">30min</span>
-              </div>
-              <button 
-                className="mt-3 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-                onClick={() => handleBookService(service)}
-              >
-                Reservar
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* All Service Categories */}
       {serviceCategories.map((category) => (
         <div key={category.name} className="mb-8">
