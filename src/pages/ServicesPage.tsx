@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { fetchHaircuts, Haircut } from '../services/haircutService';
-import { ModalBookingFlow } from '../components/ModalBookingFlow';
+import ModalBookingFlow from '../components/ModalBookingFlow';
+import { getServices, Haircut } from '../services/haircutService';
+
 
 interface ServiceCategory {
   name: string;
@@ -22,7 +23,7 @@ const ServicesPage: React.FC = () => {
   useEffect(() => {
     const getHaircuts = async () => {
       try {
-        const data = await fetchHaircuts();
+        const data = await getServices();
         
         // Organize haircuts into categories
         const categories: { [key: string]: Haircut[] } = {};
@@ -201,9 +202,8 @@ const ServicesPage: React.FC = () => {
       {/* Booking Modal */}
         {showModal && selectedService && (
           <ModalBookingFlow
-            showModal={showModal}
-            setShowModal={setShowModal}
-            selectedService={selectedService}
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
           />
       )}
     </div>

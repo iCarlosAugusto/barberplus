@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import { BeautyDatePicker } from '../InlineCalendar';
-import { Haircut } from '../../services/haircutService';
+import { useBookingStore } from '../../store/bookingStore';
 
 
-interface HomeProps {
-    selectedService: Haircut;
-}
-export function Home({ selectedService }: HomeProps) {
+export function Home() {
+  const {  selectedServices, goToServices } = useBookingStore();
+
     const [selectedPeriod, setSelectedPeriod] = useState<string>('Manhã');
     const [selectedTime, setSelectedTime] = useState<string>('');
     //const [selectedService, setSelectedService] = useState<Haircut | null>(selectedService);
@@ -87,11 +86,15 @@ export function Home({ selectedService }: HomeProps) {
       {/* Selected Service Summary */}
       <div className="p-4 bg-gray-50">
         <div className="mb-4">
-          <h3 className="font-medium text-lg mb-2">{selectedService.name}</h3>
-          <div className="flex justify-between text-gray-600">
-            <span>R$ {selectedService.price.toFixed(2)}</span>
-            <span>10:30 - 11:30</span>
-          </div>
+          {selectedServices.map((service) => (
+            <div key={service.id}>
+              <h3 className="font-medium text-lg mb-2">{service.name}</h3>
+              <div className="flex justify-between text-gray-600">
+                <span>R$ 40,00</span>
+                <span>10:30 - 11:30</span>
+              </div>
+            </div>
+          ))}
         </div>
         
         <div className="flex items-center mb-4">
@@ -127,8 +130,8 @@ export function Home({ selectedService }: HomeProps) {
           <button 
             className="text-blue-600 flex items-center justify-center mx-auto"
             onClick={() => {
-              // Logic to add another service
-              alert('Adicionar outro serviço');
+              goToServices();
+            
             }}
           >
             <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

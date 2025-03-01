@@ -1,33 +1,68 @@
-import React, { useState } from 'react'
+import React from 'react';
 import { BeautyModal } from '../Modal';
-
-import { Haircut } from '../../services/haircutService';
-import { Home } from './Home';
 import AvailableServices from './AvailableServices';
+import { useBookingStore } from '../../store/bookingStore';
+import { Home } from './Home';
 
 interface ModalBookingFlowProps {
-  showModal: boolean;
-  setShowModal: (showModal: boolean) => void;
-  selectedService: Haircut;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export function ModalBookingFlow({ showModal, setShowModal, selectedService }: ModalBookingFlowProps) {
-
-
-    const [currentContext, setCurrentContext] = useState<'availableServices' | 'home'>('home');
-
+const ModalBookingFlow: React.FC<ModalBookingFlowProps> = ({ isOpen, onClose }) => {
+  // Use the booking store instead of local state
+  const { currentContent, goToHome } = useBookingStore();
+  
+  // Determine the title based on the current content
+  const getTitle = () => {
+    switch (currentContent) {
+      case 'home':
+        return 'Agendar Serviço';
+      case 'services':
+        return 'Escolha um Serviço';
+      case 'calendar':
+        return 'Escolha uma Data';
+      case 'confirmation':
+        return 'Confirmar Agendamento';
+      default:
+        return 'Agendar Serviço';
+    }
+  };
+  
+  // Determine if we should show the back button
+  const shouldShowBackButton = currentContent !== 'home';
+  
+  // Handle back button click based on current content
+  const handleBackButtonClick = () => {
+    if (currentContent !== 'home') {
+      goToHome();
+    }
+  };
+  
+  // Render the appropriate content based on the current step
+  const renderContent = () => {
+    switch (currentContent) {
+      case 'home':
+        return <Home />;
+      case 'services':
+        return <AvailableServices />;
+      // Add other cases as needed
+      default:
+        return <Home />;
+    }
+  };
+  
   return (
     <BeautyModal
-      isOpen={showModal}
-      onClose={() => setShowModal(false)}
-      title={currentContext === 'availableServices' ? "Selecione um horário" : "Selecione um serviço"}
-      showBackButton={currentContext === 'availableServices'}
-      onBackButtonClick={() => setCurrentContext('home')}
+      isOpen={isOpen}
+      onClose={onClose}
+      title={getTitle()}
+      showBackButton={shouldShowBackButton}
+      onBackButtonClick={handleBackButtonClick}
     >
-    <>
-      {currentContext === 'home' && <Home selectedService={selectedService} />}
-      {currentContext === 'availableServices' && <AvailableServices />}
-    </>
-  </BeautyModal>
-  )
-}
+      {renderContent()}
+    </BeautyModal>
+  );
+};
+
+export default ModalBookingFlow;
