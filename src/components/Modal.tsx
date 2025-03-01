@@ -6,6 +6,8 @@ interface BeautyModalProps {
   title: string;
   children: React.ReactNode;
   className?: string;
+  showBackButton?: boolean;
+  onBackButtonClick?: () => void;
 }
 
 const BeautyModal: React.FC<BeautyModalProps> = ({
@@ -14,6 +16,8 @@ const BeautyModal: React.FC<BeautyModalProps> = ({
   title,
   children,
   className = '',
+  showBackButton = false,
+  onBackButtonClick
 }) => {
   const [isVisible, setIsVisible] = useState(isOpen);
   
@@ -64,6 +68,12 @@ const BeautyModal: React.FC<BeautyModalProps> = ({
     document.body.style.overflow = '';
   }
 
+  const handleBackClick = () => {
+    if (onBackButtonClick) {
+      onBackButtonClick();
+    }
+  }
+
   return (
     <div 
       className={`fixed inset-0 flex items-center justify-center sm:p-4 bg-black/30 backdrop-blur transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
@@ -77,9 +87,22 @@ const BeautyModal: React.FC<BeautyModalProps> = ({
       >
         {/* Modal Header with Decorative Top Border */}
         <div className="relative">
-          
           <div className="flex items-center justify-between p-4 border-b mt-1">
-            <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
+            <div className="flex items-center">
+              {showBackButton && (
+                <button
+                  type="button"
+                  className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-full p-1.5 inline-flex items-center mr-3"
+                  onClick={handleBackClick}
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd"></path>
+                  </svg>
+                  <span className="sr-only">Back</span>
+                </button>
+              )}
+              <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
+            </div>
             <button
               type="button"
               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-full p-1.5 inline-flex items-center"
