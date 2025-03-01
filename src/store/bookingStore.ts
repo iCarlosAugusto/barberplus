@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 // Define the types for our store
-export type BookingContent = 'home' | 'services' | 'calendar' | 'confirmation';
+export type BookingContent = 'home' | 'services' | 'employees' | 'confirmation';
 
 interface BookingState {
   // Current content/step in the booking flow
@@ -16,7 +16,7 @@ interface BookingState {
   // Navigation helpers
   goToServices: () => void;
   goToHome: () => void;
-  goToCalendar: () => void;
+  goToEmployees: () => void;
   goToConfirmation: () => void;
 }
 
@@ -46,6 +46,6 @@ export const useBookingStore = create<BookingState>((set) => ({
   // Navigation helper methods
   goToServices: () => set({ currentContent: 'services' }),
   goToHome: () => set({ currentContent: 'home' }),
-  goToCalendar: () => set({ currentContent: 'calendar' }),
+  goToEmployees: () => set({ currentContent: 'employees' }),
   goToConfirmation: () => set({ currentContent: 'confirmation' }),
 })); 

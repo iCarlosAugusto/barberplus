@@ -4,7 +4,7 @@ import { useBookingStore } from '../../store/bookingStore';
 
 
 export function Home() {
-  const {  selectedServices, goToServices } = useBookingStore();
+  const {  selectedServices, goToServices, goToEmployees } = useBookingStore();
 
     const [selectedPeriod, setSelectedPeriod] = useState<string>('Manhã');
     const [selectedTime, setSelectedTime] = useState<string>('');
@@ -15,8 +15,6 @@ export function Home() {
     const morningTimes = ['10:30', '10:45', '11:00', '11:15', '11:30', '11:45'];
     const afternoonTimes = ['13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'];
     const eveningTimes = ['17:00', '17:30', '18:00', '18:30', '19:00', '19:30'];
-
-    const [currentContext, setCurrentContext] = useState<'availableServices' | 'home'>('home');
 
     const getTimesByPeriod = () => {
         switch (selectedPeriod) {
@@ -107,6 +105,7 @@ export function Home() {
             />
             <span>{selectedBarber}</span>
           </div>
+          <button onClick={() => goToEmployees()}>Trocar barbeiro</button>
         </div>
         
         <div className="flex justify-between items-center border-t pt-4">

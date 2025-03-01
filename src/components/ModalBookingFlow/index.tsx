@@ -3,7 +3,7 @@ import { BeautyModal } from '../Modal';
 import AvailableServices from './AvailableServices';
 import { useBookingStore } from '../../store/bookingStore';
 import { Home } from './Home';
-
+import { AvailableEmployees } from './AvailableEmployees';
 interface ModalBookingFlowProps {
   isOpen: boolean;
   onClose: () => void;
@@ -20,8 +20,8 @@ const ModalBookingFlow: React.FC<ModalBookingFlowProps> = ({ isOpen, onClose }) 
         return 'Agendar Serviço';
       case 'services':
         return 'Escolha um Serviço';
-      case 'calendar':
-        return 'Escolha uma Data';
+      case 'employees':
+        return 'Escolha um funcionário';
       case 'confirmation':
         return 'Confirmar Agendamento';
       default:
@@ -46,7 +46,8 @@ const ModalBookingFlow: React.FC<ModalBookingFlowProps> = ({ isOpen, onClose }) 
         return <Home />;
       case 'services':
         return <AvailableServices />;
-      // Add other cases as needed
+      case 'employees':
+        return <AvailableEmployees />;
       default:
         return <Home />;
     }
