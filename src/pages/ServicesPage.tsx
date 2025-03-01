@@ -28,17 +28,6 @@ const ServicesPage: React.FC = () => {
   const afternoonTimes = ['13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'];
   const eveningTimes = ['17:00', '17:30', '18:00', '18:30', '19:00', '19:30'];
   
-  // Days of the week for the calendar
-  const daysOfWeek = [
-    { short: 'Seg', day: 17 },
-    { short: 'Ter', day: 18 },
-    { short: 'Qua', day: 19 },
-    { short: 'Qui', day: 20 },
-    { short: 'Sex', day: 21 },
-    { short: 'Sab', day: 22 },
-    { short: 'Dom', day: 23 }
-  ];
-
   useEffect(() => {
     const getHaircuts = async () => {
       try {
