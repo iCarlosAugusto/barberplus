@@ -38,7 +38,7 @@ const BeautyModal: React.FC<BeautyModalProps> = ({
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOpen) {
-        onClose();
+        handleClose();
       }
     };
 
@@ -46,6 +46,7 @@ const BeautyModal: React.FC<BeautyModalProps> = ({
     return () => {
       document.removeEventListener('keydown', handleEscKey);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, onClose]);
 
   // Don't render anything if not visible
@@ -54,9 +55,14 @@ const BeautyModal: React.FC<BeautyModalProps> = ({
   // Close when clicking the backdrop (not the modal itself)
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
-      onClose();
+      handleClose();
     }
   };
+
+  const handleClose = () => {
+    onClose();
+    document.body.style.overflow = '';
+  }
 
   return (
     <div 

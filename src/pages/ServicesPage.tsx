@@ -245,7 +245,7 @@ const ServicesPage: React.FC = () => {
       </footer>
 
       {/* Booking Modal */}
-
+        {showModal && selectedService && (
         <BeautyModal isOpen={showModal} onClose={() => setShowModal(false)} title={selectedMonth}>
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center p-4 border-b">
@@ -368,6 +368,7 @@ const ServicesPage: React.FC = () => {
             </div>
           </div>
         </BeautyModal>
+      )}
     </div>
   );
 };
