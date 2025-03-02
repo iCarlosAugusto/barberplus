@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { format, addDays, isSameDay, isToday } from 'date-fns';
 
-// TypeScript interfaces
 interface DatePickerProps {
   onDateSelect?: (date: Date) => void;
   initialDate?: Date;
