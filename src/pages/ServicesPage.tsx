@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ModalBookingFlow from '../components/ModalBookingFlow';
+import ModalBookingFlow from '@/components/ModalBookingFlow';
 import { getServices, Haircut } from "@/services/haircutService";
 
 interface ServiceCategory {

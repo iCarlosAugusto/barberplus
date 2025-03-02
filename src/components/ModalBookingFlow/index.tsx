@@ -1,9 +1,9 @@
 import React from 'react';
-import { BeautyModal } from '../Modal';
-import AvailableServices from './AvailableServices';
-import { useBookingStore } from '../../store/bookingStore';
-import { Home } from './Home';
-import { AvailableEmployees } from './AvailableEmployees';
+import { BeautyModal } from "@/components/Modal";
+import AvailableServices from "@/components/ModalBookingFlow/AvailableServices";
+import { useBookingStore } from "@/store/bookingStore";
+import { Home } from "@/components/ModalBookingFlow/Home";
+import { AvailableEmployees } from "@/components/ModalBookingFlow/AvailableEmployees";
 interface ModalBookingFlowProps {
   isOpen: boolean;
   onClose: () => void;

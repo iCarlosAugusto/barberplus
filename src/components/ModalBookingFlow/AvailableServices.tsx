@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { useBookingStore } from '../../store/bookingStore';
-// Import your service data or API functions
-import { getServices, getServiceById } from '../../services/haircutService';
+import { useBookingStore } from "@/store/bookingStore";
+import { getServices, getServiceById } from "@/services/haircutService";
 
 const AvailableServices: React.FC = () => {
   const { addService, goToHome, selectedServices } = useBookingStore();

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { BeautyDatePicker } from '../InlineCalendar';
-import { useBookingStore } from '../../store/bookingStore';
+import { useState } from 'react'
+import { BeautyDatePicker } from "@/components/InlineCalendar";
+import { useBookingStore } from "@/store/bookingStore";
 
 
 export function Home() {
