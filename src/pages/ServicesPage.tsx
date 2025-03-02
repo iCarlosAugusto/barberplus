@@ -86,10 +86,13 @@ const ServicesPage: React.FC = () => {
               <div key={service.id} className="flex justify-between items-center p-3 hover:bg-gray-50 rounded">
                 <div>
                   <h4 className="font-medium">{service.name}</h4>
-                  <span className="text-sm text-gray-600">30min</span>
                 </div>
                 <div className="flex items-center">
-                  <span className="font-bold mr-4">R$ {service.price.toFixed(2)}</span>
+                  <div className="flex flex-col items-center">
+                    <span className="font-bold mr-4">R$ {service.price.toFixed(2)}</span>
+                    <span className="text-sm text-gray-600">30min</span>
+                  </div>
+
                   <button 
                     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
                     onClick={() => handleBookService(service)}
