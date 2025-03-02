@@ -61,6 +61,15 @@ const Navbar: React.FC = () => {
               Contato
             </Link>
           </li>
+          <li className="nav-item">
+            <Link 
+              to="/employees" 
+              className={`nav-link ${location.pathname === '/employees' ? 'active' : ''}`}
+              onClick={closeMobileMenu}
+            >
+              Profissionais
+            </Link>
+          </li>
         </ul>
 
         <div className="navbar-cta">
