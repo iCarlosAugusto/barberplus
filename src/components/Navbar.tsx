@@ -9,10 +9,12 @@ const Navbar: React.FC = () => {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+    document.body.style.overflow = isMobileMenuOpen ? 'auto' : 'hidden';
   };
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+    document.body.style.overflow = isMobileMenuOpen ? 'auto' : 'hidden';
   };
 
   return (
