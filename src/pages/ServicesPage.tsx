@@ -1,64 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import ModalBookingFlow from '@/components/ModalBookingFlow';
-import { getServices, Haircut } from "@/services/haircutService";
-
-interface ServiceCategory {
-  name: string;
-  services: Haircut[];
-}
+import { useParams } from "react-router-dom";
+import { api } from "@/http/request";
+import { Company } from '@/entities/Company';
+import { Job } from '@/entities/Job';
 
 const ServicesPage: React.FC = () => {
-  const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { barberSlug } = useParams<{ barberSlug: string }>();
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  
+  const [company, setCompany] = useState<Company | null>(null);
   // Modal states
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [selectedService, setSelectedService] = useState<Haircut | null>(null);
+  const [selectedService, setSelectedService] = useState<Job | null>(null);
 
-
-
-  
   useEffect(() => {
-    const getHaircuts = async () => {
-      try {
-        const data = await getServices();
-        
-        // Organize haircuts into categories
-        const categories: { [key: string]: Haircut[] } = {};
-        
-        data.forEach(haircut => {
-          const category = haircut.category || 'Outros serviços';
-          if (!categories[category]) {
-            categories[category] = [];
-          }
-          categories[category].push(haircut);
-        });
-        
-        // Convert to array of categories
-        const categoriesArray = Object.keys(categories).map(name => ({
-          name,
-          services: categories[name]
-        }));
-        
-        setServiceCategories(categoriesArray);
-        setLoading(false);
-      } catch (error) {
-        setError('Falha ao carregar serviços. Por favor, tente novamente mais tarde.');
-        setLoading(false);
-        console.error('Error fetching haircuts:', error);
-      }
-    };
-
-    getHaircuts();
+    fetchCompanyData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const fetchCompanyData = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`companies/slug/${barberSlug}`);
+      setCompany(data);
+    } catch (error) {
+      setError('Falha ao carregar dados da empresa. Por favor, tente novamente mais tarde.');
+      console.error('Error fetching company data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Handle opening the booking modal
-  const handleBookService = (service: Haircut) => {
+  const handleBookService = (service: Job) => {
     setSelectedService(service);
     setShowModal(true);
   };
-
 
   if (loading) {
     return <div className="flex justify-center items-center h-screen">Carregando serviços...</div>;
@@ -78,32 +54,26 @@ const ServicesPage: React.FC = () => {
       <h2 className="text-2xl font-bold mb-6 border-b pb-2">Serviços</h2>
 
       {/* All Service Categories */}
-      {serviceCategories.map((category) => (
-        <div key={category.name} className="mb-8">
-          <h3 className="text-xl font-semibold mb-4 border-b pb-2">{category.name}</h3>
+      {company?.jobs.map((job) => (
           <div className="space-y-4">
-            {category.services.map((service) => (
-              <div key={service.id} className="flex justify-between items-center p-3 hover:bg-gray-50 rounded">
+              <div key={job.id} className="flex justify-between items-center p-3 hover:bg-gray-50 rounded">
                 <div>
-                  <h4 className="font-medium">{service.name}</h4>
+                  <h4 className="font-medium">{job.name}</h4>
                 </div>
                 <div className="flex items-center">
                   <div className="flex flex-col items-center">
-                    <span className="font-bold mr-4">R$ {service.price.toFixed(2)}</span>
+                    <span className="font-bold mr-4">R$ {job.price.toFixed(2)}</span>
                     <span className="text-sm text-gray-600">30min</span>
                   </div>
-
                   <button 
                     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-                    onClick={() => handleBookService(service)}
+                    onClick={() => handleBookService(job)}
                   >
                     Reservar
                   </button>
                 </div>
               </div>
-            ))}
           </div>
-        </div>
       ))}
 
       {/* Contact and Map Section */}
