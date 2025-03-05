@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { api } from "@/http/request";
 import { Company } from "@/entities/Company";
 import { Job } from "@/entities/Job";
+import { useBookingStore } from "@/store/bookingStore";
 
 const ServicesPage: React.FC = () => {
   const { barberSlug } = useParams<{ barberSlug: string }>();
@@ -11,8 +12,8 @@ const ServicesPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [company, setCompany] = useState<Company>();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [selectedService, setSelectedService] = useState<Job | null>(null);
 
+  const { addJob } = useBookingStore();
   useEffect(() => {
     fetchCompanyData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,7 +34,7 @@ const ServicesPage: React.FC = () => {
   };
 
   const handleBookService = (service: Job) => {
-    setSelectedService(service);
+    addJob(service);
     setShowModal(true);
   };
 
@@ -271,7 +272,7 @@ const ServicesPage: React.FC = () => {
       </footer>
 
       {/* Booking Modal */}
-      {showModal && selectedService && (
+      {showModal && (
         <ModalBookingFlow
           isOpen={showModal}
           onClose={() => setShowModal(false)}

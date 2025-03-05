@@ -1,19 +1,16 @@
+import { Job } from '@/entities/Job';
 import { create } from 'zustand';
 
 // Define the types for our store
 export type BookingContent = 'home' | 'services' | 'employees' | 'confirmation';
 
 interface BookingState {
-  // Current content/step in the booking flow
   currentContent: BookingContent;
-  // Selected services
-  selectedServices: string[];
-  // Actions to update the state
+  selectedJobs: Job[];
   setCurrentContent: (content: BookingContent) => void;
-  addService: (serviceId: string) => void;
-  removeService: (serviceId: string) => void;
-  clearServices: () => void;
-  // Navigation helpers
+  addJob: (job: Job) => void;
+  removeJob: (jobId: string) => void;
+  clearJobs: () => void;
   goToServices: () => void;
   goToHome: () => void;
   goToEmployees: () => void;
@@ -23,25 +20,23 @@ interface BookingState {
 // Create the store
 export const useBookingStore = create<BookingState>((set) => ({
   currentContent: 'home',
-  selectedServices: [],
+  selectedJobs: [],
   
-  // Set the current content directly
   setCurrentContent: (content) => set({ currentContent: content }),
   
   // Add a service to the selected services
-  addService: (serviceId) => 
+  addJob: (job) => 
     set((state) => ({
-      selectedServices: [...state.selectedServices, serviceId]
+      selectedJobs: [...state.selectedJobs, job]
     })),
-  
-  // Remove a service from the selected services
-  removeService: (serviceId) => 
+
+  removeJob: (jobId) => 
     set((state) => ({
-      selectedServices: state.selectedServices.filter(id => id !== serviceId)
+      selectedJobs: state.selectedJobs.filter(job => job.id !== jobId)
     })),
   
   // Clear all selected services
-  clearServices: () => set({ selectedServices: [] }),
+  clearJobs: () => set({ selectedJobs: [] }),
   
   // Navigation helper methods
   goToServices: () => set({ currentContent: 'services' }),

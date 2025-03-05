@@ -5,11 +5,10 @@ import { api } from '@/http/request';
 
 
 export function Home() {
-  const {  selectedServices, goToServices, goToEmployees } = useBookingStore();
+  const {  selectedJobs, goToServices, goToEmployees } = useBookingStore();
 
     const [selectedPeriod, setSelectedPeriod] = useState<string>('Manhã');
     const [selectedTime, setSelectedTime] = useState<string>('');
-    //const [selectedService, setSelectedService] = useState<Haircut | null>(selectedService);
     const [selectedBarber, setSelectedBarber] = useState<string>('Barbearia');
     const [totalPrice, setTotalPrice] = useState<number>(0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -107,9 +106,9 @@ export function Home() {
       {/* Selected Service Summary */}
       <div className="p-4 bg-gray-50">
         <div className="mb-4">
-          {selectedServices.map((service) => (
-            <div key={service.id}>
-              <h3 className="font-medium text-lg mb-2">{service.name}</h3>
+          {selectedJobs.map((job) => (
+            <div key={job.id}>
+              <h3 className="font-medium text-lg mb-2">{job.name}</h3>
               <div className="flex justify-between text-gray-600">
                 <span>R$ 40,00</span>
                 <span>10:30 - 11:30</span>
