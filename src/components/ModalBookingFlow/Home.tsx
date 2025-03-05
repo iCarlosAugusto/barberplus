@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BeautyDatePicker } from "@/components/InlineCalendar";
 import { useBookingStore } from "@/store/bookingStore";
+import { api } from '@/http/request';
 
 
 export function Home() {
@@ -11,28 +12,50 @@ export function Home() {
     //const [selectedService, setSelectedService] = useState<Haircut | null>(selectedService);
     const [selectedBarber, setSelectedBarber] = useState<string>('Barbearia');
     const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const morningTimes = ['10:30', '10:45', '11:00', '11:15', '11:30', '11:45'];
     const afternoonTimes = ['13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'];
     const eveningTimes = ['17:00', '17:30', '18:00', '18:30', '19:00', '19:30'];
+    const [availableHoursSlot, setAvailableHoursSlot] = useState<string[]>([]);
 
     const getTimesByPeriod = () => {
         switch (selectedPeriod) {
           case 'Manhã':
-            return morningTimes;
+            return availableHoursSlot;
           case 'Tarde':
-            return afternoonTimes;
+            return availableHoursSlot;
           case 'Noite':
-            return eveningTimes;
+            return availableHoursSlot;
           default:
-            return morningTimes;
+            return availableHoursSlot;
         }
       };
+
+  const fetchBarbers = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await api.get("/employees/066b5d10-50b8-424c-9848-e7ed1c96654d/time-slots?date=2025-03-05");
+      setAvailableHoursSlot(data);
+    } catch (error) {
+      console.log(error);
+    }
+    setIsLoading(false);
+  }
+  
+  useEffect(() => {
+    fetchBarbers();
+  }, []);
+
   return (
     <>
-      <BeautyDatePicker />
-      {/* Time Period Selection */}
-      <div className="p-4 border-b">
+      {isLoading && <div>Carregando...</div>}
+
+      {!isLoading && (
+        <>
+          <BeautyDatePicker />
+          {/* Time Period Selection */}
+          <div className="p-4 border-b">
         <div className="grid grid-cols-3 gap-2">
           {['Manhã', 'Tarde', 'Noite'].map((period) => (
             <button 
@@ -140,6 +163,8 @@ export function Home() {
           </button>
         </div>
       </div>
+      </>
+      )}  
     </>
   )
 }
