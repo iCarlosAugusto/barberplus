@@ -1,8 +1,10 @@
 import { Employee } from "@/entities/Employee";
+import { Job } from "./Job";
 
 export interface JobSchedule {
     id: string;
-    employee: Employee;
+    employee: Employee | null;
+    job: Job
     date: string;
     startTime: string;
     endTime: string;

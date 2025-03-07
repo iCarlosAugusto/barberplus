@@ -2,20 +2,17 @@ import { useEffect, useState } from 'react'
 import { BeautyDatePicker } from "@/components/InlineCalendar";
 import { useBookingStore } from "@/store/bookingStore";
 import { api } from '@/http/request';
-
+import { addMinutesToTime } from '@/utils/addMinutesToTime';
+import { minutesToHoursFormatter } from '@/utils/minutesToHours';
+import { useCompanyStore } from '@/store/companyStore';
 
 export function Home() {
   const {  selectedJobs, goToServices, goToEmployees } = useBookingStore();
+  const { company } = useCompanyStore();
 
     const [selectedPeriod, setSelectedPeriod] = useState<string>('Manhã');
-    const [selectedTime, setSelectedTime] = useState<string>('');
-    const [selectedBarber, setSelectedBarber] = useState<string>('Barbearia');
-    const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [selectedTime, setSelectedTime] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
-    const morningTimes = ['10:30', '10:45', '11:00', '11:15', '11:30', '11:45'];
-    const afternoonTimes = ['13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'];
-    const eveningTimes = ['17:00', '17:30', '18:00', '18:30', '19:00', '19:30'];
     const [availableHoursSlot, setAvailableHoursSlot] = useState<string[]>([]);
 
     const getTimesByPeriod = () => {
@@ -31,26 +28,30 @@ export function Home() {
         }
       };
 
-  const fetchBarbers = async () => {
+  const fetchCompanyTimeSlots = async () => {
+ 
     setIsLoading(true);
     try {
-      const { data } = await api.get("/employees/066b5d10-50b8-424c-9848-e7ed1c96654d/time-slots?date=2025-03-05");
+      const { data } = await api.get(`/companies/${company?.id}/time-slots?date=2025-03-05`);
       setAvailableHoursSlot(data);
+      setSelectedTime(data[0])
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }
   
   useEffect(() => {
-    fetchBarbers();
+    fetchCompanyTimeSlots();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
       {isLoading && <div>Carregando...</div>}
 
-      {!isLoading && (
+      {!isLoading && selectedTime && (
         <>
           <BeautyDatePicker />
           {/* Time Period Selection */}
@@ -105,35 +106,41 @@ export function Home() {
       
       {/* Selected Service Summary */}
       <div className="p-4 bg-gray-50">
-        <div className="mb-4">
-          {selectedJobs.map((job) => (
-            <div key={job.id}>
-              <h3 className="font-medium text-lg mb-2">{job.name}</h3>
-              <div className="flex justify-between text-gray-600">
-                <span>R$ 40,00</span>
-                <span>10:30 - 11:30</span>
+
+      {selectedJobs.map((jobSchedule) => (
+        <div key={jobSchedule.job.id} className='bg-gray-200 p-4 rounded-md mb-4'>
+          <div className="mb-4">
+              <div>
+                <h3 className="font-medium text-lg mb-2">{jobSchedule.job.name}</h3>
+                <div className="flex justify-between text-gray-600">
+                  <span>R$ {jobSchedule.job.price}</span>
+                  <span>{selectedTime} - {addMinutesToTime(selectedTime, minutesToHoursFormatter(jobSchedule.job.durationMinutes))}</span>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-        
-        <div className="flex items-center mb-4">
-          <span className="mr-2">Funcionário:</span>
-          <div className="flex items-center">
-            <img 
-              src="https://via.placeholder.com/30" 
-              alt="Barber" 
-              className="w-7 h-7 rounded-full mr-2"
-            />
-            <span>{selectedBarber}</span>
+  
           </div>
-          <button onClick={() => goToEmployees()}>Trocar barbeiro</button>
+          
+          <div className="flex items-center mb-4">
+            <span className="mr-2">Funcionário:</span>
+            <div className="flex items-center">
+              <img 
+                src="https://via.placeholder.com/30" 
+                alt="Barber" 
+                className="w-7 h-7 rounded-full mr-2"
+              />
+              <span>{jobSchedule.employee?.name ?? "Sem preferencia"}</span>
+            </div>
+            <button onClick={() => goToEmployees()}>Trocar barbeiro</button>
+          </div>
         </div>
+      ))}
+        
+  
         
         <div className="flex justify-between items-center border-t pt-4">
           <div>
             <span className="text-gray-600">Total:</span>
-            <span className="text-xl font-bold ml-2">R$ {totalPrice.toFixed(2)}</span>
+            <span className="text-xl font-bold ml-2">R$ {"TODO"}</span>
             <span className="text-gray-500 text-sm ml-2">1h</span>
           </div>
           

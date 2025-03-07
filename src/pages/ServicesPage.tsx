@@ -2,18 +2,20 @@ import React, { useEffect, useState } from "react";
 import ModalBookingFlow from "@/components/ModalBookingFlow";
 import { useParams } from "react-router-dom";
 import { api } from "@/http/request";
-import { Company } from "@/entities/Company";
 import { Job } from "@/entities/Job";
 import { useBookingStore } from "@/store/bookingStore";
+import { useCompanyStore } from "@/store/companyStore";
+import { JobSchedule } from "@/entities/JobSchedule";
 
 const ServicesPage: React.FC = () => {
   const { barberSlug } = useParams<{ barberSlug: string }>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [company, setCompany] = useState<Company>();
+  const [error, setError] = useState<string | null>(null);  
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { company, setCompany } = useCompanyStore();
 
   const { addJob } = useBookingStore();
+
   useEffect(() => {
     fetchCompanyData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,8 +35,19 @@ const ServicesPage: React.FC = () => {
     }
   };
 
-  const handleBookService = (service: Job) => {
-    addJob(service);
+  const handleBookService = (job: Job) => {
+
+    const scheduleJob: JobSchedule = {
+      id: job.id,
+      job: job,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      employee: null,
+      date: new Date().toISOString(),
+      startTime: new Date().toISOString(),
+      endTime: new Date().toISOString(),
+    }
+    addJob(scheduleJob);
     setShowModal(true);
   };
 

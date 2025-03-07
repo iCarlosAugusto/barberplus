@@ -1,4 +1,4 @@
-import { Job } from '@/entities/Job';
+import { JobSchedule } from '@/entities/JobSchedule';
 import { create } from 'zustand';
 
 // Define the types for our store
@@ -6,9 +6,9 @@ export type BookingContent = 'home' | 'services' | 'employees' | 'confirmation';
 
 interface BookingState {
   currentContent: BookingContent;
-  selectedJobs: Job[];
+  selectedJobs: JobSchedule[];
   setCurrentContent: (content: BookingContent) => void;
-  addJob: (job: Job) => void;
+  addJob: (job: JobSchedule) => void;
   removeJob: (jobId: string) => void;
   clearJobs: () => void;
   goToServices: () => void;
