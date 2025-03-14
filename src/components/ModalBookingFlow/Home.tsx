@@ -5,9 +5,10 @@ import { api } from '@/http/request';
 import { addMinutesToTime } from '@/utils/addMinutesToTime';
 import { minutesToHoursFormatter } from '@/utils/minutesToHours';
 import { useCompanyStore } from '@/store/companyStore';
+import { Job } from '@/entities/Job';
 
 export function Home() {
-  const {  selectedJobs, goToServices, goToEmployees } = useBookingStore();
+  const {  selectedJobs, goToServices, goToEmployees, setCurrentJobChangeEmployee } = useBookingStore();
   const { company } = useCompanyStore();
 
     const [selectedPeriod, setSelectedPeriod] = useState<string>('Manhã');
@@ -40,6 +41,11 @@ export function Home() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  const handleChangeEmployee = (job: Job) => {
+    setCurrentJobChangeEmployee(job);
+    goToEmployees();
   }
   
   useEffect(() => {
@@ -130,7 +136,7 @@ export function Home() {
               />
               <span>{jobSchedule.employee?.name ?? "Sem preferencia"}</span>
             </div>
-            <button onClick={() => goToEmployees()}>Trocar barbeiro</button>
+            <button onClick={() => handleChangeEmployee(jobSchedule.job)}>Trocar barbeiro</button>
           </div>
         </div>
       ))}
