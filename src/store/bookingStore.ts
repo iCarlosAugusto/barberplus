@@ -1,3 +1,4 @@
+import { Job } from '@/entities/Job';
 import { JobSchedule } from '@/entities/JobSchedule';
 import { create } from 'zustand';
 
@@ -15,12 +16,15 @@ interface BookingState {
   goToHome: () => void;
   goToEmployees: () => void;
   goToConfirmation: () => void;
+  currentJobChangeEmployee: null | Job;
+  setCurrentJobChangeEmployee: (job: Job) => void;
 }
 
 // Create the store
 export const useBookingStore = create<BookingState>((set) => ({
   currentContent: 'home',
   selectedJobs: [],
+  currentJobChangeEmployee: null,
   
   setCurrentContent: (content) => set({ currentContent: content }),
   
@@ -37,6 +41,10 @@ export const useBookingStore = create<BookingState>((set) => ({
   
   // Clear all selected services
   clearJobs: () => set({ selectedJobs: [] }),
+
+  setCurrentJobChangeEmployee: (job: Job) => set({ currentJobChangeEmployee: job }),
+  
+  clearCurrentJobChangeEmployee: () => set({ currentJobChangeEmployee: null }),
   
   // Navigation helper methods
   goToServices: () => set({ currentContent: 'services' }),

@@ -5,7 +5,7 @@ export interface JobSchedule {
     id: string;
     employee: Employee | null;
     job: Job
-    date: string;
+    date: Date;
     startTime: string;
     endTime: string;
     createdAt: string;

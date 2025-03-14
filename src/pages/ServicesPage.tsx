@@ -13,6 +13,7 @@ const ServicesPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);  
   const [showModal, setShowModal] = useState<boolean>(false);
   const { company, setCompany } = useCompanyStore();
+  const [jobs, setJobs] = useState<Job[]>([]);
 
   const { addJob } = useBookingStore();
 
@@ -20,10 +21,17 @@ const ServicesPage: React.FC = () => {
     fetchCompanyData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const fetchJobs = async (companyId: string) => {
+    const { data } = await api.get(`/companies/${companyId}/jobs`);
+    setJobs(data);
+  }
+
   const fetchCompanyData = async () => {
     setLoading(true);
     try {
       const { data } = await api.get(`companies/slug/${barberSlug}`);
+      await fetchJobs(data.id);
       setCompany(data);
     } catch (error) {
       setError(
@@ -43,7 +51,7 @@ const ServicesPage: React.FC = () => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       employee: null,
-      date: new Date().toISOString(),
+      date: new Date(),
       startTime: new Date().toISOString(),
       endTime: new Date().toISOString(),
     }
@@ -79,7 +87,7 @@ const ServicesPage: React.FC = () => {
       <h2 className="text-2xl font-bold mb-6 border-b pb-2">Serviços</h2>
 
       {/* All Service Categories */}
-      {company?.jobs.map((job) => (
+      {jobs.map((job) => (
         <div className="space-y-4">
           <div
             key={job.id}
