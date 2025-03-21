@@ -11,8 +11,7 @@ const ServicesPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);  
   const [showModal, setShowModal] = useState<boolean>(false);
-  const { company, setCompany } = useCompanyStore();
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const { company, setCompany, setCompanyJobs, companyJobs } = useCompanyStore();
 
   const { addJob } = useBookingStore();
 
@@ -23,7 +22,7 @@ const ServicesPage: React.FC = () => {
 
   const fetchJobs = async (companyId: string) => {
     const { data } = await api.get(`/companies/${companyId}/jobs`);
-    setJobs(data);
+    setCompanyJobs(data);
   }
 
   const fetchCompanyData = async () => {
@@ -83,7 +82,7 @@ const ServicesPage: React.FC = () => {
       <h2 className="text-2xl font-bold mb-6 border-b pb-2">Serviços</h2>
 
       {/* All Service Categories */}
-      {jobs.map((job) => (
+      {companyJobs.map((job) => (
         <div className="space-y-4">
           <div
             key={job.id}
