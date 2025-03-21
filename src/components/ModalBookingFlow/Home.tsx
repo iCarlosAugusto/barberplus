@@ -8,7 +8,7 @@ import { useCompanyStore } from '@/store/companyStore';
 import { Job } from '@/entities/Job';
 
 export function Home() {
-  const {  selectedJobs, goToServices, goToEmployees, setCurrentJobChangeEmployee } = useBookingStore();
+  const {  jobSchedule, goToServices, goToEmployees, setCurrentJobChangeEmployee } = useBookingStore();
   const { company } = useCompanyStore();
 
     const [selectedPeriod, setSelectedPeriod] = useState<string>('Manhã');
@@ -112,8 +112,7 @@ export function Home() {
       
       {/* Selected Service Summary */}
       <div className="p-4 bg-gray-50">
-
-      {selectedJobs.map((jobSchedule) => (
+      {jobSchedule?.jobs.map((jobSchedule) => (
         <div key={jobSchedule.job.id} className='bg-gray-200 p-4 rounded-md mb-4'>
           <div className="mb-4">
               <div>
