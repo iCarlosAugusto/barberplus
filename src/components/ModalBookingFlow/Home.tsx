@@ -42,10 +42,12 @@ export function Home() {
 
   }
 
-  const fetchCompanyTimeSlots = async () => {
+  const fetchCompanyTimeSlots = async (date: Date) => {
+    const datePickedFormatted = format(date, 'yyyy-MM-dd');
+
     setIsLoading(true);
     try {
-      const { data } = await api.get(`/companies/${company?.id}/time-slots?date=2025-03-05`);
+      const { data } = await api.get(`/companies/${company?.id}/time-slots?date=${datePickedFormatted}`);
       setAvailableHoursSlot(data);
       setSelectedTime(data[0])
       updateFirstJob(data[0]);
@@ -62,18 +64,19 @@ export function Home() {
   }
   
   useEffect(() => {
-    fetchCompanyTimeSlots();
+    fetchCompanyTimeSlots(new Date());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
+    
       {isLoading && <div>Carregando...</div>}
-
+      <BeautyDatePicker
+        onDateSelect={(date) => fetchCompanyTimeSlots(date)}
+      />
       {!isLoading && selectedTime && (
         <>
-          <BeautyDatePicker />
-          {/* Time Period Selection */}
           <div className="p-4 border-b">
         <div className="grid grid-cols-3 gap-2">
           {['Manhã', 'Tarde', 'Noite'].map((period) => (
@@ -127,7 +130,6 @@ export function Home() {
       <div className="p-4 bg-gray-50">
       {jobSchedule?.jobs.map((jobElement, index) => (
         <div key={jobElement.job.id} className='bg-gray-200 p-4 rounded-md mb-4'>
-          {JSON.stringify(jobElement)}
           <div className="mb-4">
               <div>
                 <h3 className="font-medium text-lg mb-2">{jobElement.job.name}</h3>
