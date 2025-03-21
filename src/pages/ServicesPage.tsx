@@ -5,7 +5,6 @@ import { api } from "@/http/request";
 import { Job } from "@/entities/Job";
 import { useBookingStore } from "@/store/bookingStore";
 import { useCompanyStore } from "@/store/companyStore";
-import { JobSchedule } from "@/entities/JobSchedule";
 
 const ServicesPage: React.FC = () => {
   const { barberSlug } = useParams<{ barberSlug: string }>();
@@ -44,18 +43,15 @@ const ServicesPage: React.FC = () => {
   };
 
   const handleBookService = (job: Job) => {
+    const startTime = new Date();
+    const endTime = new Date(startTime.getTime() + job.durationMinutes * 60000);
 
-    const scheduleJob: JobSchedule = {
-      id: job.id,
+    addJob({
       job: job,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
       employee: null,
-      date: new Date(),
-      startTime: new Date().toISOString(),
-      endTime: new Date().toISOString(),
-    }
-    addJob(scheduleJob);
+      startTime: startTime,
+      endTime: endTime
+    });
     setShowModal(true);
   };
 
