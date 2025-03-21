@@ -6,6 +6,7 @@ import { addMinutesToTime } from '@/utils/addMinutesToTime';
 import { minutesToHoursFormatter } from '@/utils/minutesToHours';
 import { useCompanyStore } from '@/store/companyStore';
 import { Job } from '@/entities/Job';
+import { format } from 'date-fns';
 
 export function Home() {
   const {  jobSchedule, goToServices, goToEmployees, setCurrentJobChangeEmployee } = useBookingStore();
@@ -112,14 +113,20 @@ export function Home() {
       
       {/* Selected Service Summary */}
       <div className="p-4 bg-gray-50">
-      {jobSchedule?.jobs.map((jobSchedule) => (
-        <div key={jobSchedule.job.id} className='bg-gray-200 p-4 rounded-md mb-4'>
+      {jobSchedule?.jobs.map((jobElement, index) => (
+        <div key={jobElement.job.id} className='bg-gray-200 p-4 rounded-md mb-4'>
+          {JSON.stringify(jobElement)}
           <div className="mb-4">
               <div>
-                <h3 className="font-medium text-lg mb-2">{jobSchedule.job.name}</h3>
+                <h3 className="font-medium text-lg mb-2">{jobElement.job.name}</h3>
                 <div className="flex justify-between text-gray-600">
-                  <span>R$ {jobSchedule.job.price}</span>
-                  <span>{selectedTime} - {addMinutesToTime(selectedTime, minutesToHoursFormatter(jobSchedule.job.durationMinutes))}</span>
+                  <span>R$ {jobElement.job.price}</span>
+                  {index === 0 && (
+                    <span>{selectedTime} - {addMinutesToTime(selectedTime, minutesToHoursFormatter(jobElement.job.durationMinutes))}</span>
+                  )}
+                  {index > 0 && (
+                    <span>{format(jobElement.startTime, 'HH:mm')} - {format(jobElement.endTime, 'HH:mm')}</span>
+                  )}
                 </div>
               </div>
   
@@ -133,9 +140,9 @@ export function Home() {
                 alt="Barber" 
                 className="w-7 h-7 rounded-full mr-2"
               />
-              <span>{jobSchedule.employee?.name ?? "Sem preferencia"}</span>
+              <span>{jobElement.employee?.name ?? "Sem preferencia"}</span>
             </div>
-            <button onClick={() => handleChangeEmployee(jobSchedule.job)}>Trocar barbeiro</button>
+            <button onClick={() => handleChangeEmployee(jobElement.job)}>Trocar barbeiro</button>
           </div>
         </div>
       ))}
