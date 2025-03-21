@@ -9,7 +9,7 @@ interface EmployeeTimeSlot {
 }
 
 export function AvailableEmployees() {
-  const { currentJobChangeEmployee, jobSchedule } = useBookingStore();
+  const { currentJobChangeEmployee, jobSchedule, updateJobEmployee } = useBookingStore();
 
   const currentJob = jobSchedule?.jobs.find(
     (job) => job.job.id === currentJobChangeEmployee?.id
@@ -40,6 +40,11 @@ export function AvailableEmployees() {
     }
   };
 
+  const handleSelectEmployee = (employeeId: string) => {
+    const employee = currentJob?.job.doneByEmployees.find(employee => employee.id === employeeId);
+    updateJobEmployee(currentJobChangeEmployee!.id, employee!);
+  };
+
   useEffect(() => {
     fetchAvailableTimeByEmployee();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -50,7 +55,6 @@ export function AvailableEmployees() {
     startDate: string,
     endDate: string
   ) {
-  
     function converteParaMinutos(hora: string) {
       const [horas, minutos] = hora.split(":").map(Number);
       return horas * 60 + minutos;
@@ -80,20 +84,27 @@ export function AvailableEmployees() {
 
   return (
     <>
-      {currentJob?.job.doneByEmployees.map((employee) => (
-        <div key={employee.id} className="flex flex-row justify-between">
-          <h3>{employee.name}</h3>
-          <span>
-            {
-              verifyTimeSlot(
-                employeeTimeSlots.find((el) => el.employeeId === employee.id)?.timeSlot,
-                formatDate(currentJob.startTime),
-                formatDate(currentJob.endTime)
-              ) ? "Disponível" : "Indisponível"
-            }
-          </span>
-        </div>
-      ))}
+      {currentJob?.job.doneByEmployees.map((employee) => {
+        const isAvailable = verifyTimeSlot(
+          employeeTimeSlots.find((el) => el.employeeId === employee.id)
+            ?.timeSlot,
+          formatDate(currentJob.startTime),
+          formatDate(currentJob.endTime)
+        );
+
+        return (
+          <div
+            key={employee.id}
+            className="flex flex-col items-start bg-gray-200 rounded p-4 cursor-pointer"
+            onClick={() => handleSelectEmployee(employee.id)}
+          >
+            <h3>{employee.name}</h3>
+            <span className={`text-sm ${isAvailable ? "text-green-500" : "text-red-500"} font-bold`}>
+              {isAvailable ? "Disponível" : "Indisponível"}
+            </span>
+          </div>
+        );
+      })}
     </>
   );
 }

@@ -26,6 +26,7 @@ interface BookingState {
   currentJobChangeEmployee: null | Job;
   setCurrentJobChangeEmployee: (job: Job) => void;
   clearCurrentJobChangeEmployee: () => void;
+  updateJobEmployee: (jobId: string, employee: Employee) => void;
 }
 
 export const useBookingStore = create<BookingState>((set) => ({
@@ -77,6 +78,17 @@ export const useBookingStore = create<BookingState>((set) => ({
           jobs: state.jobSchedule.jobs.filter(job => job.job.id !== jobId)
         }
       };
+    }),
+
+    updateJobEmployee: (jobId: string, employee: Employee) =>
+    set((state) => {
+      if (!state.jobSchedule) return { jobSchedule: null };
+      const job = state.jobSchedule.jobs.find(job => job.job.id === jobId);
+      if (!job) return { jobSchedule: state.jobSchedule };
+
+      job.employee = employee;
+      
+      return { jobSchedule: state.jobSchedule };
     }),
   
   // Clear all selected services
