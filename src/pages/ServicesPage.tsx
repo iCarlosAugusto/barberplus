@@ -42,14 +42,12 @@ const ServicesPage: React.FC = () => {
   };
 
   const handleBookService = (job: Job) => {
-    const startTime = new Date();
-    const endTime = new Date(startTime.getTime() + job.durationMinutes * 60000);
-
+  
     addJob({
       job: job,
       employee: null,
-      startTime: startTime,
-      endTime: endTime
+      startTime: new Date(), //Valor será trocado quando o usuário acessar o modal de agendamento
+      endTime: new Date() //Valor será trocado quando o usuário acessar o modal de agendamento
     });
     setShowModal(true);
   };

@@ -9,7 +9,7 @@ import { Job } from '@/entities/Job';
 import { format } from 'date-fns';
 
 export function Home() {
-  const {  jobSchedule, goToServices, goToEmployees, setCurrentJobChangeEmployee } = useBookingStore();
+  const {  jobSchedule, goToServices, goToEmployees, setCurrentJobChangeEmployee, updateJob } = useBookingStore();
   const { company } = useCompanyStore();
 
     const [selectedPeriod, setSelectedPeriod] = useState<string>('Manhã');
@@ -30,13 +30,25 @@ export function Home() {
         }
       };
 
+  const updateFirstJob = (timeSlot: string) => {
+
+    // if(jobSchedule){
+    //   updateJob(jobSchedule.jobs[0].job.id, {
+    //     ...jobSchedule?.jobs[0].job,
+    //     startTime: selectedTime,
+    //     endTime: addMinutesToTime(selectedTime, minutesToHoursFormatter(jobSchedule?.jobs[0].job.durationMinutes))
+    //   })
+    // }
+
+  }
+
   const fetchCompanyTimeSlots = async () => {
- 
     setIsLoading(true);
     try {
       const { data } = await api.get(`/companies/${company?.id}/time-slots?date=2025-03-05`);
       setAvailableHoursSlot(data);
       setSelectedTime(data[0])
+      updateFirstJob(data[0]);
     } catch (error) {
       console.log(error);
     } finally {

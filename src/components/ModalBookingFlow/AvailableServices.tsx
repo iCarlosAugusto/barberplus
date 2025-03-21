@@ -1,17 +1,35 @@
 import { useBookingStore } from "@/store/bookingStore";
 import { useCompanyStore } from '@/store/companyStore';
 import { Job } from '@/entities/Job';
+import { addMinutes } from "date-fns";
+
 const AvailableServices: React.FC = () => {
-  const { addJob, goToHome } = useBookingStore();
+  const { addJob, jobSchedule, goToHome } = useBookingStore();
   const { companyJobs } = useCompanyStore();
   
-  const handleSelectJob = (job: Job) => {
-    //TODO - Arrumar
+  const handleSelectJob = (_: Job) => {
+
+    const fakeJob: Job = {
+      id: "123",
+      name: "teste",
+      description: "teste",
+      price: 100,
+      durationMinutes: 30,
+      doneByEmployees: [],
+    }
+    const lastJob = jobSchedule?.jobs[jobSchedule?.jobs.length - 1];
+
+    const startTimeStr = addMinutes(lastJob!.endTime, 10).toISOString();
+    const startTime = new Date(startTimeStr);
+    
+    const endTimeStr = addMinutes(startTime, fakeJob.durationMinutes).toISOString();
+    const endTime = new Date(endTimeStr);
+
     addJob({
-      job: job,
+      job: fakeJob,
       employee: null,
-      startTime: new Date(),
-      endTime: new Date()
+      startTime: startTime,
+      endTime: endTime
     });
     goToHome();
   };
