@@ -6,16 +6,18 @@ import { addMinutesToTime } from '@/utils/addMinutesToTime';
 import { minutesToHoursFormatter } from '@/utils/minutesToHours';
 import { useCompanyStore } from '@/store/companyStore';
 import { Job } from '@/entities/Job';
-import { format } from 'date-fns';
+import { format, isToday } from 'date-fns';
+import { AxiosError } from 'axios';
 
 export function Home() {
-  const {  jobSchedule, goToServices, goToEmployees, setCurrentJobChangeEmployee, updateJob } = useBookingStore();
+  const {  jobSchedule, goToServices, goToEmployees, setCurrentJobChangeEmployee } = useBookingStore();
   const { company } = useCompanyStore();
 
     const [selectedPeriod, setSelectedPeriod] = useState<string>('Manhã');
     const [selectedTime, setSelectedTime] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [availableHoursSlot, setAvailableHoursSlot] = useState<string[]>([]);
+    const [isCompanyAvailable, setIsCompanyAvailable] = useState<boolean | null>(null);
 
     const getTimesByPeriod = () => {
         switch (selectedPeriod) {
@@ -43,19 +45,28 @@ export function Home() {
   }
 
   const fetchCompanyTimeSlots = async (date: Date) => {
+
     const datePickedFormatted = format(date, 'yyyy-MM-dd');
+    const dayOfWeek = format(date, 'EEEE').toUpperCase();
+    const hours = isToday(date) ? format(date, 'HH:mm') : company?.workSchedule.find(schedule => schedule.dayOfWeek === dayOfWeek)?.startTime;
 
     setIsLoading(true);
     try {
-      const { data } = await api.get(`/companies/${company?.id}/time-slots?date=${datePickedFormatted}`);
+      const { data } = await api.get(`/companies/${company?.id}/time-slots?date=${datePickedFormatted}&hours=${hours}`);
       setAvailableHoursSlot(data);
       setSelectedTime(data[0])
       updateFirstJob(data[0]);
+      setIsCompanyAvailable(true);
     } catch (error) {
+      console.log(error instanceof AxiosError)
+      if(error instanceof AxiosError && error.status === 400) {
+        console.log("caiu no if: ");
+        setIsCompanyAvailable(false);
+      }
       console.log(error);
     } finally {
       setIsLoading(false);
-    }
+    } 
   }
 
   const handleChangeEmployee = (job: Job) => {
@@ -75,6 +86,13 @@ export function Home() {
       <BeautyDatePicker
         onDateSelect={(date) => fetchCompanyTimeSlots(date)}
       />
+
+      {isCompanyAvailable === false && (
+        <div className="p-4 border-b">
+          <div className="text-red-500">A empresa não está disponível nesse horário</div>
+        </div>
+      )}
+
       {!isLoading && selectedTime && (
         <>
           <div className="p-4 border-b">
