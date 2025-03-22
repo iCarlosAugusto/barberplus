@@ -76,15 +76,14 @@ const ServicesPage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto p-4">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Colorado Barbearia</h1>
+        <h1 className="text-3xl font-bold">{company.name}</h1>
         <p className="text-gray-600">
-          Rua 238, QD40 lt 16 n 392, 74603-180, Goiânia
+          {company.address}
         </p>
       </header>
 
-      <h2 className="text-2xl font-bold mb-6 border-b pb-2">Serviços</h2>
+      <h2 className="text-2xl font-bold mb-6 border-b border-gray-200 text-left pb-2">Serviços</h2>
 
-      {/* All Service Categories */}
       {companyJobs.map((job) => (
         <div className="space-y-4">
           <div
@@ -95,9 +94,9 @@ const ServicesPage: React.FC = () => {
               <h4 className="font-medium">{job.name}</h4>
             </div>
             <div className="flex items-center">
-              <div className="flex flex-col items-center">
-                <span className="font-bold mr-4">
-                  R$ {job.price.toFixed(2)}
+              <div className="flex flex-col items-end mr-4">
+                <span className="font-bold">
+                  R$ {job.price.toFixed(2).replace(".", ",")}
                 </span>
                 <span className="text-sm text-gray-600">30min</span>
               </div>
@@ -113,8 +112,8 @@ const ServicesPage: React.FC = () => {
       ))}
 
       {/* Contact and Map Section */}
-      <div className="mt-12 border-t pt-8">
-        <h2 className="text-2xl font-bold mb-6 border-b pb-2">
+      <div className="mt-12 pt-8">
+        <h2 className="text-2xl font-bold mb-6 border-gray-200 border-b pb-2 text-left">
           Localização e Contato
         </h2>
 
