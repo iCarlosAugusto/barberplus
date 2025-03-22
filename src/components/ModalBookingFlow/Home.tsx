@@ -10,7 +10,7 @@ import { format, isToday } from 'date-fns';
 import { AxiosError } from 'axios';
 
 export function Home() {
-  const {  jobSchedule, goToServices, goToEmployees, setCurrentJobChangeEmployee } = useBookingStore();
+  const {  jobSchedule, goToServices, goToEmployees, setCurrentJobChangeEmployee, removeJob } = useBookingStore();
   const { company } = useCompanyStore();
 
     const [selectedPeriod, setSelectedPeriod] = useState<string>('Manhã');
@@ -33,15 +33,15 @@ export function Home() {
       };
 
   const updateFirstJob = (timeSlot: string) => {
-
+    setSelectedTime(timeSlot);
+    
     // if(jobSchedule){
     //   updateJob(jobSchedule.jobs[0].job.id, {
     //     ...jobSchedule?.jobs[0].job,
-    //     startTime: selectedTime,
-    //     endTime: addMinutesToTime(selectedTime, minutesToHoursFormatter(jobSchedule?.jobs[0].job.durationMinutes))
+    //     startTime: timeSlot,
+    //     endTime: addMinutesToTime(timeSlot, minutesToHoursFormatter(jobSchedule?.jobs[0].job.durationMinutes))
     //   })
     // }
-
   }
 
   const fetchCompanyTimeSlots = async (date: Date) => {
@@ -72,6 +72,12 @@ export function Home() {
   const handleChangeEmployee = (job: Job) => {
     setCurrentJobChangeEmployee(job);
     goToEmployees();
+  }
+
+  const handleRemoveJob = (jobId: string) => {
+    if (jobSchedule && jobSchedule.jobs.length > 1) {
+      removeJob(jobId);
+    }
   }
   
   useEffect(() => {
@@ -147,21 +153,32 @@ export function Home() {
       {/* Selected Service Summary */}
       <div className="p-4 bg-gray-50">
       {jobSchedule?.jobs.map((jobElement, index) => (
-        <div key={jobElement.job.id} className='bg-gray-200 p-4 rounded-md mb-4'>
+        <div key={jobElement.job.id} className='bg-gray-200 p-4 rounded-md mb-4 relative'>
+          {jobSchedule.jobs.length > 1 && (
+            <button 
+              onClick={() => handleRemoveJob(jobElement.job.id)}
+              className="absolute top-2 right-2 text-gray-600 hover:text-red-600 transition-colors"
+              aria-label="Remove job"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          )}
+          
           <div className="mb-4">
-              <div>
-                <h3 className="font-medium text-lg mb-2">{jobElement.job.name}</h3>
-                <div className="flex justify-between text-gray-600">
-                  <span>R$ {jobElement.job.price}</span>
-                  {index === 0 && (
-                    <span>{selectedTime} - {addMinutesToTime(selectedTime, minutesToHoursFormatter(jobElement.job.durationMinutes))}</span>
-                  )}
-                  {index > 0 && (
-                    <span>{format(jobElement.startTime, 'HH:mm')} - {format(jobElement.endTime, 'HH:mm')}</span>
-                  )}
-                </div>
+            <div>
+              <h3 className="font-medium text-lg mb-2">{jobElement.job.name}</h3>
+              <div className="flex justify-between text-gray-600">
+                <span>R$ {jobElement.job.price}</span>
+                {index === 0 && (
+                  <span>{selectedTime} - {addMinutesToTime(selectedTime, minutesToHoursFormatter(jobElement.job.durationMinutes))}</span>
+                )}
+                {index > 0 && (
+                  <span>{format(jobElement.startTime, 'HH:mm')} - {format(jobElement.endTime, 'HH:mm')}</span>
+                )}
               </div>
-  
+            </div>
           </div>
           
           <div className="flex items-center mb-4">
