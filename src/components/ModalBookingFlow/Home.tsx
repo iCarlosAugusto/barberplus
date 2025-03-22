@@ -87,13 +87,13 @@ export function Home() {
         onDateSelect={(date) => fetchCompanyTimeSlots(date)}
       />
 
-      {isCompanyAvailable === false && (
+      {!isCompanyAvailable && !isLoading && (
         <div className="p-4 border-b">
           <div className="text-red-500">A empresa não está disponível nesse horário</div>
         </div>
       )}
 
-      {!isLoading && selectedTime && (
+      {!isLoading && selectedTime && isCompanyAvailable && (
         <>
           <div className="p-4 border-b">
         <div className="grid grid-cols-3 gap-2">
