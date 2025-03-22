@@ -13,7 +13,7 @@ const ServicesPage: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const { company, setCompany, setCompanyJobs, companyJobs } = useCompanyStore();
 
-  const { addJob } = useBookingStore();
+  const { addJob, clearJobs } = useBookingStore();
 
   useEffect(() => {
     fetchCompanyData();
@@ -51,6 +51,11 @@ const ServicesPage: React.FC = () => {
     });
     setShowModal(true);
   };
+
+  const closeModal = () => {
+    setShowModal(false);
+    clearJobs();
+  }
 
   if (loading) {
     return (
@@ -289,7 +294,7 @@ const ServicesPage: React.FC = () => {
       {showModal && (
         <ModalBookingFlow
           isOpen={showModal}
-          onClose={() => setShowModal(false)}
+          onClose={closeModal}
         />
       )}
     </div>
