@@ -1,3 +1,5 @@
+import { WorkSchedule } from "@/entities/WorkSchedule";
+
 export interface Company {
     id: string;
     name: string;
@@ -8,4 +10,5 @@ export interface Company {
     email: string;
     createdAt: string;
     updatedAt: string;
+    workSchedule: WorkSchedule[];
 }
