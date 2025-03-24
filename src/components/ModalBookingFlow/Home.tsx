@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { BeautyDatePicker } from "@/components/InlineCalendar";
 import { useBookingStore } from "@/store/bookingStore";
 import { api } from '@/http/request';
@@ -6,12 +6,13 @@ import { addMinutesToTime } from '@/utils/addMinutesToTime';
 import { minutesToHoursFormatter } from '@/utils/minutesToHours';
 import { useCompanyStore } from '@/store/companyStore';
 import { Job } from '@/entities/Job';
-import { format, isToday } from 'date-fns';
+import { format, isToday, parse } from 'date-fns';
 import { AxiosError } from 'axios';
 
-export function Home() {
-  const {  jobSchedule, goToServices, goToEmployees, setCurrentJobChangeEmployee, removeJob } = useBookingStore();
+export function Home({ firstJob }: { firstJob: Job }) {
+  const {  jobSchedule, goToServices, goToEmployees, setCurrentJobChangeEmployee, removeJob, addJob } = useBookingStore();
   const { company } = useCompanyStore();
+  const currentDateSelectedRef = useRef<Date>(new Date());
 
     const [selectedPeriod, setSelectedPeriod] = useState<string>('Manhã');
     const [selectedTime, setSelectedTime] = useState<string>("");
@@ -34,14 +35,15 @@ export function Home() {
 
   const updateFirstJob = (timeSlot: string) => {
     setSelectedTime(timeSlot);
-    
-    // if(jobSchedule){
-    //   updateJob(jobSchedule.jobs[0].job.id, {
-    //     ...jobSchedule?.jobs[0].job,
-    //     startTime: timeSlot,
-    //     endTime: addMinutesToTime(timeSlot, minutesToHoursFormatter(jobSchedule?.jobs[0].job.durationMinutes))
-    //   })
-    // }
+    const startTimeTeste = parse(timeSlot, "HH:mm", currentDateSelectedRef.current);
+    const endTimeTeste = parse(addMinutesToTime(timeSlot, minutesToHoursFormatter(firstJob.durationMinutes)), "HH:mm", currentDateSelectedRef.current);
+    addJob({
+      job: firstJob,
+      employee: null,
+      date: currentDateSelectedRef.current,
+      startTime: startTimeTeste,
+      endTime: endTimeTeste
+    })
   }
 
   const fetchCompanyTimeSlots = async (date: Date) => {
@@ -69,6 +71,10 @@ export function Home() {
     } 
   }
 
+  const handleChangeHour = (timeSlot: string) => {
+    setSelectedTime(timeSlot);
+  }
+
   const handleChangeEmployee = (job: Job) => {
     setCurrentJobChangeEmployee(job);
     goToEmployees();
@@ -90,7 +96,10 @@ export function Home() {
     
       {isLoading && <div>Carregando...</div>}
       <BeautyDatePicker
-        onDateSelect={(date) => fetchCompanyTimeSlots(date)}
+        onDateSelect={(date) => {
+          currentDateSelectedRef.current = date;
+          fetchCompanyTimeSlots(date);
+        }}
       />
 
       {!isCompanyAvailable && !isLoading && (
@@ -136,7 +145,7 @@ export function Home() {
                   ? 'bg-blue-600 text-white' 
                   : 'bg-gray-100 hover:bg-gray-200'
               }`}
-              onClick={() => setSelectedTime(time)}
+              onClick={() => handleChangeHour(time)}
             >
               {time}
             </button>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ModalBookingFlow from "@/components/ModalBookingFlow";
 import { useParams } from "react-router-dom";
 import { api } from "@/http/request";
@@ -12,8 +12,9 @@ const ServicesPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);  
   const [showModal, setShowModal] = useState<boolean>(false);
   const { company, setCompany, setCompanyJobs, companyJobs } = useCompanyStore();
+  const selectedJob = useRef<Job | null>(null);
 
-  const { addJob, clearJobs } = useBookingStore();
+  const { clearJobs } = useBookingStore();
 
   useEffect(() => {
     fetchCompanyData();
@@ -42,13 +43,7 @@ const ServicesPage: React.FC = () => {
   };
 
   const handleBookService = (job: Job) => {
-  
-    addJob({
-      job: job,
-      employee: null,
-      startTime: new Date(), //Valor será trocado quando o usuário acessar o modal de agendamento
-      endTime: new Date() //Valor será trocado quando o usuário acessar o modal de agendamento
-    });
+    selectedJob.current = job;
     setShowModal(true);
   };
 
@@ -290,10 +285,11 @@ const ServicesPage: React.FC = () => {
       </footer>
 
       {/* Booking Modal */}
-      {showModal && (
+      {showModal && selectedJob.current && (
         <ModalBookingFlow
           isOpen={showModal}
           onClose={closeModal}
+          firstJob={selectedJob.current}
         />
       )}
     </div>

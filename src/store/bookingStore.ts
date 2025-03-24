@@ -8,6 +8,7 @@ export type BookingContent = 'home' | 'services' | 'employees' | 'confirmation';
 interface AddJobProps {
   job: Job;
   employee: Employee | null;
+  date: Date;
   startTime: Date;
   endTime: Date;
 }
@@ -38,14 +39,14 @@ export const useBookingStore = create<BookingState>((set) => ({
   
   setCurrentContent: (content) => set({ currentContent: content }),
   
-  addJob: ({job, employee, startTime, endTime}: AddJobProps ) => 
+  addJob: ({job, employee, startTime, endTime, date}: AddJobProps ) => 
     set((state) => {
       if (!state.jobSchedule) {
         // Criar um novo JobSchedule quando não existe
         return { 
           jobSchedule: {
             id: crypto.randomUUID(),
-            date: new Date(),
+            date: date,
             jobs: [{
               job: job, 
               employee: employee, 

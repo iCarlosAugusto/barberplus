@@ -4,12 +4,14 @@ import AvailableServices from "@/components/ModalBookingFlow/AvailableServices";
 import { useBookingStore } from "@/store/bookingStore";
 import { Home } from "@/components/ModalBookingFlow/Home";
 import { AvailableEmployees } from "@/components/ModalBookingFlow/AvailableEmployees";
+import { Job } from '@/entities/Job';
 interface ModalBookingFlowProps {
   isOpen: boolean;
   onClose: () => void;
+  firstJob: Job;
 }
 
-const ModalBookingFlow: React.FC<ModalBookingFlowProps> = ({ isOpen, onClose }) => {
+const ModalBookingFlow: React.FC<ModalBookingFlowProps> = ({ isOpen, onClose, firstJob }) => {
   // Use the booking store instead of local state
   const { currentContent, goToHome } = useBookingStore();
   
@@ -43,13 +45,13 @@ const ModalBookingFlow: React.FC<ModalBookingFlowProps> = ({ isOpen, onClose }) 
   const renderContent = () => {
     switch (currentContent) {
       case 'home':
-        return <Home />;
+        return <Home firstJob={firstJob} />;
       case 'services':
         return <AvailableServices />;
       case 'employees':
         return <AvailableEmployees />;
       default:
-        return <Home />;
+        return <Home firstJob={firstJob} />;
     }
   };
   
