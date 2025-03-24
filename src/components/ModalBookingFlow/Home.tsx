@@ -57,7 +57,9 @@ export function Home({ firstJob }: { firstJob: Job }) {
       const { data } = await api.get(`/companies/${company?.id}/time-slots?date=${datePickedFormatted}&hours=${hours}`);
       setAvailableHoursSlot(data);
       setSelectedTime(data[0])
-      updateFirstJob(data[0]);
+      if(!jobSchedule) {
+        updateFirstJob(data[0]);
+      }
       setIsCompanyAvailable(true);
     } catch (error) {
       console.log(error instanceof AxiosError)
