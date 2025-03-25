@@ -124,12 +124,6 @@ export function Home({ firstJob }: { firstJob: Job }) {
       {/* Time Slots */}
       <div className="p-4 border-b">
         <div className="flex overflow-x-auto space-x-2 pb-2">
-          <button className="text-gray-500 hover:text-gray-700 flex-shrink-0">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
-          </button>
-          
           {getTimesByPeriod().map((time) => (
             <button 
               key={time}
@@ -143,12 +137,6 @@ export function Home({ firstJob }: { firstJob: Job }) {
               {time}
             </button>
           ))}
-          
-          <button className="text-gray-500 hover:text-gray-700 flex-shrink-0">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </button>
         </div>
       </div>
       
