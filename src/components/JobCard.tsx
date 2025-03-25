@@ -31,7 +31,7 @@ export const JobCard = ({ jobElement, index }: JobCardProps) => {
       });
     }
 
-    const handleRemoveJob = (jobId: string) => {
+    const handleRemoveJob = (indexElement: number) => {
       jobSchedule?.jobs.forEach((job, index) => {
         if (jobSchedule) {
           if(index > 0) {
@@ -40,7 +40,7 @@ export const JobCard = ({ jobElement, index }: JobCardProps) => {
           }
         }
       });
-      removeJob(jobId);
+      removeJob(indexElement);
     }
 
     const handleChangeEmployee = (job: Job) => {
@@ -59,7 +59,7 @@ export const JobCard = ({ jobElement, index }: JobCardProps) => {
           <div key={jobElement.job.id} className='bg-gray-200 p-4 rounded-md mb-4 relative'>
         {jobSchedule?.jobs.length && jobSchedule.jobs.length > 1 && (
           <button 
-            onClick={() => handleRemoveJob(jobElement.job.id)}
+            onClick={() => handleRemoveJob(index)}
             className="absolute top-2 right-2 text-gray-600 hover:text-red-600 transition-colors"
             aria-label="Remove job"
           >
