@@ -7,23 +7,15 @@ const AvailableServices: React.FC = () => {
   const { addJob, jobSchedule, goToHome } = useBookingStore();
   const { companyJobs } = useCompanyStore();
   
-  const handleSelectJob = (_: Job) => {
+  const handleSelectJob = (job: Job) => {
 
-    const fakeJob: Job = {
-      id: "123",
-      name: "teste",
-      description: "teste",
-      price: 100,
-      durationMinutes: 20,
-      doneByEmployees: [],
-    }
     const lastJob = jobSchedule?.jobs[jobSchedule?.jobs.length - 1];
 
     const startTimeTeste = lastJob!.endTime;
-    const endTimeTeste = addMinutes(lastJob!.endTime, fakeJob.durationMinutes);
+    const endTimeTeste = addMinutes(lastJob!.endTime, job.durationMinutes);
 
     addJob({
-      job: fakeJob,
+      job: job,
       employee: null,
       startTime: startTimeTeste,
       endTime: endTimeTeste,
@@ -58,4 +50,4 @@ const AvailableServices: React.FC = () => {
   );
 };
 
-export default AvailableServices;
+export { AvailableServices };
