@@ -18,7 +18,7 @@ interface BookingState {
   jobSchedule: Schedule | null;
   setCurrentContent: (content: BookingContent) => void;
   addJob: (props: AddJobProps) => void;
-  removeJob: (jobId: string) => void;
+  removeJob: (jobIndex: number) => void;
   clearJobs: () => void;  
   goToServices: () => void;
   goToHome: () => void;
@@ -70,14 +70,14 @@ export const useBookingStore = create<BookingState>((set) => ({
       };
     }),
 
-  removeJob: (jobId) => 
+  removeJob: (jobIndex: number) => 
     set((state) => {
       if (!state.jobSchedule) return { jobSchedule: null };
       
       return {
         jobSchedule: {
           ...state.jobSchedule,
-          jobs: state.jobSchedule.jobs.filter(job => job.job.id !== jobId)
+          jobs: state.jobSchedule.jobs.filter((job, index) => index !== jobIndex)
         }
       };
     }),
