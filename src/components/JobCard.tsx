@@ -2,9 +2,7 @@ import { Job } from '@/entities/Job';
 import { JobSchedule } from "@/entities/JobSchedule";
 import { changeHoursEmitter } from "@/events/ChangeHoursEmitter";
 import { useBookingStore } from "@/store/bookingStore";
-import { addMinutesToTime } from '@/utils/addMinutesToTime';
-import { minutesToHoursFormatter } from '@/utils/minutesToHours';
-import { format, addMinutes, parse } from "date-fns";
+import { format, addMinutes } from "date-fns";
 import { useEffect } from 'react';
 
 interface JobCardProps {
@@ -16,13 +14,13 @@ export const JobCard = ({ jobElement, index }: JobCardProps) => {
 
     const { jobSchedule, removeJob, setCurrentJobChangeEmployee, goToEmployees } = useBookingStore();
 
-    const hourChanged = (hours: string) => {
+    const hourChanged = (hours: Date) => {
       jobSchedule?.jobs.forEach((job, index) => {
         if (jobSchedule) {
 
           if(index === 0) {
-            jobSchedule.jobs[index].startTime = parse(hours, "HH:mm", jobSchedule.date);
-            jobSchedule.jobs[index].endTime = parse(addMinutesToTime(hours, minutesToHoursFormatter(job.job.durationMinutes)), "HH:mm", jobSchedule.date);
+            jobSchedule.jobs[index].startTime = hours;
+            jobSchedule.jobs[index].endTime = addMinutes(hours, job.job.durationMinutes);
           } else {
             jobSchedule.jobs[index].startTime = jobSchedule.jobs[index - 1].endTime;
             jobSchedule.jobs[index].endTime = addMinutes(jobSchedule.jobs[index - 1].endTime, job.job.durationMinutes);
@@ -50,7 +48,7 @@ export const JobCard = ({ jobElement, index }: JobCardProps) => {
 
 
     useEffect(() => {
-      changeHoursEmitter.addListener('changeHours', (hours: string) => {
+      changeHoursEmitter.addListener('changeHours', (hours: Date) => {
         hourChanged(hours);
       });
     }, []);

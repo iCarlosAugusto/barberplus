@@ -17,9 +17,9 @@ export function Home({ firstJob }: { firstJob: Job }) {
   const currentDateSelectedRef = useRef<Date>(new Date());
 
   const [selectedPeriod, setSelectedPeriod] = useState<string>("Manhã");
-  const [selectedTime, setSelectedTime] = useState<string>("");
+  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [availableHoursSlot, setAvailableHoursSlot] = useState<string[]>([]);
+  const [availableHoursSlot, setAvailableHoursSlot] = useState<Date[]>([]);
   const [isCompanyAvailable, setIsCompanyAvailable] = useState<boolean | null>(
     null
   );
@@ -38,7 +38,6 @@ export function Home({ firstJob }: { firstJob: Job }) {
   };
 
   const updateFirstJob = (timeSlot: string) => {
-    setSelectedTime(timeSlot);
     const startTimeTeste = parse(
       timeSlot,
       "HH:mm",
@@ -61,6 +60,12 @@ export function Home({ firstJob }: { firstJob: Job }) {
     });
   };
 
+  const generateSlots = (timeSlots: string[]) => {
+    const slots = timeSlots.map((time) => parse(time, "HH:mm", currentDateSelectedRef.current));
+    setSelectedTime(slots[0]);
+    setAvailableHoursSlot(slots);
+  };
+
   const fetchCompanyTimeSlots = async (date: Date) => {
     const datePickedFormatted = format(date, "yyyy-MM-dd");
     const dayOfWeek = format(date, "EEEE").toUpperCase();
@@ -75,8 +80,7 @@ export function Home({ firstJob }: { firstJob: Job }) {
       const { data } = await api.get(
         `/companies/${company?.id}/time-slots?date=${datePickedFormatted}&hours=${hours}`
       );
-      setAvailableHoursSlot(data);
-      setSelectedTime(data[0]);
+      generateSlots(data);
       if (!jobSchedule) {
         updateFirstJob(data[0]);
       }
@@ -93,7 +97,7 @@ export function Home({ firstJob }: { firstJob: Job }) {
     }
   };
 
-  const handleChangeHour = (timeSlot: string) => {
+  const handleChangeHour = (timeSlot: Date) => {
     setSelectedTime(timeSlot);
     changeHoursEmitter.emit("changeHours", timeSlot);
   };
@@ -121,7 +125,7 @@ export function Home({ firstJob }: { firstJob: Job }) {
         </div>
       )}
 
-      {!isLoading && selectedTime && isCompanyAvailable && (
+      {!isLoading && isCompanyAvailable && (
         <>
           <div className="p-4 border-b">
             <div className="grid grid-cols-3 gap-2">
@@ -146,7 +150,7 @@ export function Home({ firstJob }: { firstJob: Job }) {
             <div className="flex overflow-x-auto space-x-2 pb-2">
               {getTimesByPeriod().map((time) => (
                 <button
-                  key={time}
+                  key={time.toISOString()}
                   className={`py-2 px-4 rounded-md flex-shrink-0 ${
                     selectedTime === time
                       ? "bg-blue-600 text-white"
@@ -154,7 +158,7 @@ export function Home({ firstJob }: { firstJob: Job }) {
                   }`}
                   onClick={() => handleChangeHour(time)}
                 >
-                  {time}
+                  {format(time, "HH:mm")}
                 </button>
               ))}
             </div>
