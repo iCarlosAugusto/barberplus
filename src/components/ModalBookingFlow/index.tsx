@@ -1,6 +1,6 @@
 import React from 'react';
 import { BeautyModal } from "@/components/Modal";
-import AvailableServices from "@/components/ModalBookingFlow/AvailableServices";
+import { AvailableServices } from "@/components/ModalBookingFlow/AvailableServices";
 import { useBookingStore } from "@/store/bookingStore";
 import { Home } from "@/components/ModalBookingFlow/Home";
 import { AvailableEmployees } from "@/components/ModalBookingFlow/AvailableEmployees";
