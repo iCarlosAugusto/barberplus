@@ -11,7 +11,7 @@ import { AxiosError } from 'axios';
 import { JobCard } from '@/components/JobCard';
 import { changeHoursEmitter } from '@/events/ChangeHoursEmitter';
 export function Home({ firstJob }: { firstJob: Job }) {
-  const {  jobSchedule, goToServices, goToEmployees, setCurrentJobChangeEmployee, removeJob, addJob } = useBookingStore();
+  const {  jobSchedule, goToServices, addJob } = useBookingStore();
   const { company } = useCompanyStore();
   const currentDateSelectedRef = useRef<Date>(new Date());
 
@@ -77,17 +77,6 @@ export function Home({ firstJob }: { firstJob: Job }) {
   const handleChangeHour = (timeSlot: string) => {
     setSelectedTime(timeSlot);
     changeHoursEmitter.emit("changeHours", timeSlot);
-  }
-
-  const handleChangeEmployee = (job: Job) => {
-    setCurrentJobChangeEmployee(job);
-    goToEmployees();
-  }
-
-  const handleRemoveJob = (jobId: string) => {
-    if (jobSchedule && jobSchedule.jobs.length > 1) {
-      removeJob(jobId);
-    }
   }
   
   useEffect(() => {
