@@ -12,33 +12,46 @@ interface JobCardProps {
     index: number;
 }
 
-
-const handleRemoveJob = (jobId: string) => {
-    console.log(jobId);
-}
-
-const handleChangeEmployee = (job: Job) => {
-    console.log(job);
-}
-
 export const JobCard = ({ jobElement, index }: JobCardProps) => {
 
-    const { jobSchedule } = useBookingStore();
+    const { jobSchedule, removeJob, setCurrentJobChangeEmployee, goToEmployees } = useBookingStore();
+
+    const hourChanged = (hours: string) => {
+      jobSchedule?.jobs.forEach((job, index) => {
+        if (jobSchedule) {
+
+          if(index === 0) {
+            jobSchedule.jobs[index].startTime = parse(hours, "HH:mm", jobSchedule.date);
+            jobSchedule.jobs[index].endTime = parse(addMinutesToTime(hours, minutesToHoursFormatter(job.job.durationMinutes)), "HH:mm", jobSchedule.date);
+          } else {
+            jobSchedule.jobs[index].startTime = jobSchedule.jobs[index - 1].endTime;
+            jobSchedule.jobs[index].endTime = addMinutes(jobSchedule.jobs[index - 1].endTime, job.job.durationMinutes);
+          }
+        }
+      });
+    }
+
+    const handleRemoveJob = (jobId: string) => {
+      jobSchedule?.jobs.forEach((job, index) => {
+        if (jobSchedule) {
+          if(index > 0) {
+            job.startTime = jobSchedule.jobs[index - 1].startTime;
+            job.endTime = jobSchedule.jobs[index - 1].endTime;
+          }
+        }
+      });
+      removeJob(jobId);
+    }
+
+    const handleChangeEmployee = (job: Job) => {
+      setCurrentJobChangeEmployee(job);
+      goToEmployees();
+    }
+
 
     useEffect(() => {
       changeHoursEmitter.addListener('changeHours', (hours: string) => {
-        jobSchedule?.jobs.forEach((job, index) => {
-          if (jobSchedule) {
-
-            if(index === 0) {
-              jobSchedule.jobs[index].startTime = parse(hours, "HH:mm", jobSchedule.date);
-              jobSchedule.jobs[index].endTime = parse(addMinutesToTime(hours, minutesToHoursFormatter(job.job.durationMinutes)), "HH:mm", jobSchedule.date);
-            } else {
-              jobSchedule.jobs[index].startTime = jobSchedule.jobs[index - 1].endTime;
-              jobSchedule.jobs[index].endTime = addMinutes(jobSchedule.jobs[index - 1].endTime, job.job.durationMinutes);
-            }
-          }
-        });
+        hourChanged(hours);
       });
     }, []);
     return (
