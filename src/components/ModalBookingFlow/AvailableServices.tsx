@@ -14,22 +14,20 @@ const AvailableServices: React.FC = () => {
       name: "teste",
       description: "teste",
       price: 100,
-      durationMinutes: 30,
+      durationMinutes: 20,
       doneByEmployees: [],
     }
     const lastJob = jobSchedule?.jobs[jobSchedule?.jobs.length - 1];
 
-    const startTimeStr = addMinutes(lastJob!.endTime, 10).toISOString();
-    const startTime = new Date(startTimeStr);
-    
-    const endTimeStr = addMinutes(startTime, fakeJob.durationMinutes).toISOString();
-    const endTime = new Date(endTimeStr);
+    const startTimeTeste = lastJob!.endTime;
+    const endTimeTeste = addMinutes(lastJob!.endTime, fakeJob.durationMinutes);
 
     addJob({
       job: fakeJob,
       employee: null,
-      startTime: startTime,
-      endTime: endTime
+      startTime: startTimeTeste,
+      endTime: endTimeTeste,
+      date: jobSchedule!.date
     });
     goToHome();
   };

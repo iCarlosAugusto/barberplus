@@ -1,6 +1,6 @@
 import { Employee } from '@/entities/Employee';
 import { Job } from '@/entities/Job';
-import { JobSchedule } from '@/entities/JobSchedule';
+import { Schedule } from '@/entities/JobSchedule';
 import { create } from 'zustand';
 
 export type BookingContent = 'home' | 'services' | 'employees' | 'confirmation';
@@ -15,7 +15,7 @@ interface AddJobProps {
 
 interface BookingState {
   currentContent: BookingContent;
-  jobSchedule: JobSchedule | null;
+  jobSchedule: Schedule | null;
   setCurrentContent: (content: BookingContent) => void;
   addJob: (props: AddJobProps) => void;
   removeJob: (jobId: string) => void;

@@ -8,7 +8,8 @@ import { useCompanyStore } from '@/store/companyStore';
 import { Job } from '@/entities/Job';
 import { format, isToday, parse } from 'date-fns';
 import { AxiosError } from 'axios';
-
+import { JobCard } from '@/components/JobCard';
+import { changeHoursEmitter } from '@/events/ChangeHoursEmitter';
 export function Home({ firstJob }: { firstJob: Job }) {
   const {  jobSchedule, goToServices, goToEmployees, setCurrentJobChangeEmployee, removeJob, addJob } = useBookingStore();
   const { company } = useCompanyStore();
@@ -75,6 +76,7 @@ export function Home({ firstJob }: { firstJob: Job }) {
 
   const handleChangeHour = (timeSlot: string) => {
     setSelectedTime(timeSlot);
+    changeHoursEmitter.emit("changeHours", timeSlot);
   }
 
   const handleChangeEmployee = (job: Job) => {
@@ -164,47 +166,7 @@ export function Home({ firstJob }: { firstJob: Job }) {
       {/* Selected Service Summary */}
       <div className="p-4 bg-gray-50">
       {jobSchedule?.jobs.map((jobElement, index) => (
-        <div key={jobElement.job.id} className='bg-gray-200 p-4 rounded-md mb-4 relative'>
-          {jobSchedule.jobs.length > 1 && (
-            <button 
-              onClick={() => handleRemoveJob(jobElement.job.id)}
-              className="absolute top-2 right-2 text-gray-600 hover:text-red-600 transition-colors"
-              aria-label="Remove job"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
-          )}
-          
-          <div className="mb-4">
-            <div>
-              <h3 className="font-medium text-lg mb-2">{jobElement.job.name}</h3>
-              <div className="flex justify-between text-gray-600">
-                <span>R$ {jobElement.job.price}</span>
-                {index === 0 && (
-                  <span>{selectedTime} - {addMinutesToTime(selectedTime, minutesToHoursFormatter(jobElement.job.durationMinutes))}</span>
-                )}
-                {index > 0 && (
-                  <span>{format(jobElement.startTime, 'HH:mm')} - {format(jobElement.endTime, 'HH:mm')}</span>
-                )}
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex items-center mb-4">
-            <span className="mr-2">Funcionário:</span>
-            <div className="flex items-center">
-              <img 
-                src="https://via.placeholder.com/30" 
-                alt="Barber" 
-                className="w-7 h-7 rounded-full mr-2"
-              />
-              <span>{jobElement.employee?.name ?? "Sem preferencia"}</span>
-            </div>
-            <button onClick={() => handleChangeEmployee(jobElement.job)}>Trocar barbeiro</button>
-          </div>
-        </div>
+          <JobCard key={index} jobElement={jobElement} index={index} />
       ))}
         
   
