@@ -29,6 +29,8 @@ interface BookingState {
   clearCurrentJobChangeEmployee: () => void;
   updateJobEmployee: (jobId: string, employee: Employee) => void;
   updateJob: (jobId: string, job: Job) => void;
+  selectedInitialTime: Date | null;
+  setSelectedInitialTime: (time: Date) => void;
 }
 
 export const useBookingStore = create<BookingState>((set) => ({
@@ -36,7 +38,10 @@ export const useBookingStore = create<BookingState>((set) => ({
   jobSchedule: null,
   selectedJobs: [],
   currentJobChangeEmployee: null,
-  
+
+  selectedInitialTime: null,
+  setSelectedInitialTime: (time: Date) => set({ selectedInitialTime: time }),
+
   setCurrentContent: (content) => set({ currentContent: content }),
   
   addJob: ({job, employee, startTime, endTime, date}: AddJobProps ) => 

@@ -15,9 +15,9 @@ export const JobCard = ({ jobElement, index }: JobCardProps) => {
     const { jobSchedule, removeJob, setCurrentJobChangeEmployee, goToEmployees } = useBookingStore();
 
     const hourChanged = (hours: Date) => {
-      jobSchedule?.jobs.forEach((job, index) => {
-        if (jobSchedule) {
-
+      if (jobSchedule) {
+        jobSchedule.date = hours;
+        jobSchedule.jobs.forEach((job, index) => {
           if(index === 0) {
             jobSchedule.jobs[index].startTime = hours;
             jobSchedule.jobs[index].endTime = addMinutes(hours, job.job.durationMinutes);
@@ -25,8 +25,8 @@ export const JobCard = ({ jobElement, index }: JobCardProps) => {
             jobSchedule.jobs[index].startTime = jobSchedule.jobs[index - 1].endTime;
             jobSchedule.jobs[index].endTime = addMinutes(jobSchedule.jobs[index - 1].endTime, job.job.durationMinutes);
           }
-        }
-      });
+        });
+      }
     }
 
     const handleRemoveJob = (indexElement: number) => {

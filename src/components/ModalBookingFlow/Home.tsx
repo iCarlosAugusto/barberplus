@@ -12,12 +12,11 @@ import { JobCard } from "@/components/JobCard";
 import { changeHoursEmitter } from "@/events/ChangeHoursEmitter";
 
 export function Home({ firstJob }: { firstJob: Job }) {
-  const { jobSchedule, goToServices, addJob } = useBookingStore();
+  const { jobSchedule, goToServices, addJob, setSelectedInitialTime, selectedInitialTime } = useBookingStore();
   const { company } = useCompanyStore();
   const currentDateSelectedRef = useRef<Date>(new Date());
 
   const [selectedPeriod, setSelectedPeriod] = useState<string>("Manhã");
-  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [availableHoursSlot, setAvailableHoursSlot] = useState<Date[]>([]);
   const [isCompanyAvailable, setIsCompanyAvailable] = useState<boolean | null>(
@@ -60,9 +59,24 @@ export function Home({ firstJob }: { firstJob: Job }) {
     });
   };
 
+  const updateDaySchedule = (date: Date) => {
+    if(jobSchedule) {
+      jobSchedule.date = date;
+      jobSchedule.date.setHours(selectedInitialTime?.getHours() ?? 0);
+      jobSchedule.date.setMinutes(selectedInitialTime?.getMinutes() ?? 0);
+      jobSchedule.date.setSeconds(selectedInitialTime?.getSeconds() ?? 0);
+      jobSchedule.jobs.forEach((job) => {
+        job.startTime.setDate(date.getDate());
+        job.endTime.setDate(date.getDate());
+      });
+    }
+  }
+
   const generateSlots = (timeSlots: string[]) => {
     const slots = timeSlots.map((time) => parse(time, "HH:mm", currentDateSelectedRef.current));
-    setSelectedTime(slots[0]);
+    if(!selectedInitialTime) {
+      setSelectedInitialTime(slots[0]);
+    }
     setAvailableHoursSlot(slots);
   };
 
@@ -98,7 +112,8 @@ export function Home({ firstJob }: { firstJob: Job }) {
   };
 
   const handleChangeHour = (timeSlot: Date) => {
-    setSelectedTime(timeSlot);
+    // setSelectedTime(timeSlot);
+    setSelectedInitialTime(timeSlot);
     changeHoursEmitter.emit("changeHours", timeSlot);
   };
 
@@ -113,6 +128,7 @@ export function Home({ firstJob }: { firstJob: Job }) {
       <BeautyDatePicker
         onDateSelect={(date) => {
           currentDateSelectedRef.current = date;
+          updateDaySchedule(date);
           fetchCompanyTimeSlots(date);
         }}
       />
@@ -145,21 +161,22 @@ export function Home({ firstJob }: { firstJob: Job }) {
             </div>
           </div>
 
-          {/* Time Slots */}
           <div className="p-4 border-b">
             <div className="flex overflow-x-auto space-x-2 pb-2">
               {getTimesByPeriod().map((time) => (
-                <button
-                  key={time.toISOString()}
-                  className={`py-2 px-4 rounded-md flex-shrink-0 ${
-                    selectedTime === time
+                <div className="flex flex-col">
+                  <button
+                    key={time.toISOString()}
+                    className={`py-2 px-4 rounded-md flex-shrink-0 ${
+                    selectedInitialTime?.getHours() === time.getHours() && selectedInitialTime?.getMinutes() === time.getMinutes()
                       ? "bg-blue-600 text-white"
                       : "bg-gray-100 hover:bg-gray-200"
                   }`}
                   onClick={() => handleChangeHour(time)}
                 >
-                  {format(time, "HH:mm")}
-                </button>
+                    {format(time, "HH:mm")}
+                  </button>
+                </div>
               ))}
             </div>
           </div>
